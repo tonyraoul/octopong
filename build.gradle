@@ -39,9 +39,9 @@ kotlinFrontend {
     }
 
     webpackBundle {
-        bundleName = "jsMain"
+        bundleName = "main"
         contentPath = file('src/main/web')
-        mode = 'production'
+        mode = 'development'
     }
 
     define "PRODUCTION", false
