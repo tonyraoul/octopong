@@ -1,37 +1,68 @@
-plugins {
-    id 'kotlin-multiplatform' version '1.3.21'
-}
-repositories {
-    mavenCentral()
-}
-group 'com.example'
-version '0.0.1'
+buildscript {
+    ext.kotlin_version = '1.3.21'
 
-apply plugin: 'maven-publish'
+    repositories {
+        jcenter()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+    }
 
-kotlin {
-    js()
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation kotlin('stdlib-common')
-            }
-        }
-        commonTest {
-            dependencies {
-                implementation kotlin('test-common')
-                implementation kotlin('test-annotations-common')
-            }
-        }
-        jsMain {
-            dependencies {
-                implementation kotlin('stdlib-js')
-            }
-        }
-        jsTest {
-            dependencies {
-                implementation kotlin('test-js')
-            }
-        }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-frontend-plugin:0.0.45"
     }
 }
+
+group = 'org.jetbrains.kotlin.example'
+version = '0.0.1-SNAPSHOT'
+
+apply plugin: 'kotlin2js'
+apply plugin: 'kotlin-dce-js'
+apply plugin: 'org.jetbrains.kotlin.frontend'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+}
+
+kotlinFrontend {
+    downloadNodeJsVersion = "latest"
+
+    npm {
+//        dependency("kotlin", "1.1.0")
+        dependency "style-loader"
+
+        devDependency("karma")
+    }
+
+    webpackBundle {
+        bundleName = "jsMain"
+        contentPath = file('src/main/web')
+        mode = 'production'
+    }
+
+    define "PRODUCTION", false
+    define "X", false
+
+}
+
+compileKotlin2Js {
+    kotlinOptions.metaInfo = true
+    kotlinOptions.outputFile = "$project.buildDir.path/js/${project.name}.js"
+    kotlinOptions.sourceMap = true
+    kotlinOptions.moduleKind = 'commonjs'
+    kotlinOptions.main = "call"
+}
+
+compileTestKotlin2Js {
+    kotlinOptions.metaInfo = true
+    kotlinOptions.outputFile = "$project.buildDir.path/js-tests/${project.name}-tests.js"
+    kotlinOptions.sourceMap = true
+    kotlinOptions.moduleKind = 'commonjs'
+//    kotlinOptions.moduleName = project.name + "-test"
+    kotlinOptions.main = "call"
+}
+
