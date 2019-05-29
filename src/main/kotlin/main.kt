@@ -1,6 +1,10 @@
-package test.hello
+package octopong
 
 fun main () {
-  console.log("hi")
+  console.log("Application started")
+  var game: Game? = Game()
+  game?.animate()
 }
+
+
 

@@ -21,10 +21,12 @@ apply plugin: 'org.jetbrains.kotlin.frontend'
 
 repositories {
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    implementation 'com.github.markaren:three.kt:v0.88-ALPHA-7'
     testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
 }
 
@@ -34,7 +36,7 @@ kotlinFrontend {
     npm {
 //        dependency("kotlin", "1.1.0")
         dependency "style-loader"
-
+        dependency "three"
         devDependency("karma")
     }
 
